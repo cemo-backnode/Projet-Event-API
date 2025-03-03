@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int     @id @default(autoincrement())
+  nom        String
+  email      String  @unique
+  motDePasse String
+  role       Role
+  dateInscription DateTime @default(now())
+
+  organisateurEvenements Event[] @relation("Organisateur")
+  reservations Booking[]
+}
+
+model Event {
+  id          Int     @id @default(autoincrement())
+  titre       String
+  description String?
+  date        DateTime
+  lieu        String
+  prix        Float
+  capaciteMax Int
+  organisateurId Int
+  organisateur  User   @relation("Organisateur", fields: [organisateurId], references: [id])
+  typeEvenementId Int?
+  typeEvenement  EventType? @relation(fields: [typeEvenementId], references: [id])
+
+  reservations Booking[]
+}
+
+model EventType {
+  id    Int    @id @default(autoincrement())
+  nom   String @unique
+
+  evenements Event[]
+}
+
+model Booking {
+  id           Int     @id @default(autoincrement())
+  participantId Int
+  eventId      Int
+  dateReservation DateTime @default(now())
+  statut       BookingStatus
+
+  participant  User   @relation(fields: [participantId], references: [id])
+  evenement    Event  @relation(fields: [eventId], references: [id])
+  paiement     Payment?
+}
+
+model Payment {
+  id          Int     @id @default(autoincrement())
+  bookingId   Int     @unique
+  montant     Float
+  methodePaiement String
+  statut      PaymentStatus
+  datePaiement DateTime @default(now())
+
+  reservation Booking @relation(fields: [bookingId], references: [id])
+}
+
+enum Role {
+  administrateur
+  organisateur
+  participant
+}
+
+enum BookingStatus {
+  confirme
+  annule
+  en_attente
+}
+
+enum PaymentStatus {
+  en_attente
+  confirme
+  echoue
+  rembourse
+}
