@@ -20,19 +20,22 @@ model User {
 }
 
 model Event {
-  id          Int     @id @default(autoincrement())
-  titre       String
-  description String?
-  date        DateTime
-  lieu        String
-  prix        Float
-  capaciteMax Int
+  id             Int      @id @default(autoincrement())
+  titre          String
+  description    String?
+  date           DateTime
+  heureDebut     DateTime
+  heureFin       DateTime
+  lieu           String
+  prix           Float
+  capaciteMax    Int
+  payant         Boolean  @default(false)
   organisateurId Int
-  organisateur  User   @relation("Organisateur", fields: [organisateurId], references: [id])
+  organisateur   User     @relation("Organisateur", fields: [organisateurId], references: [id])
   typeEvenementId Int?
   typeEvenement  EventType? @relation(fields: [typeEvenementId], references: [id])
 
-  reservations Booking[]
+  reservations   Booking[]
 }
 
 model EventType {
