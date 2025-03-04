@@ -7,6 +7,7 @@ import eventRoutes from "./routes/eventRoutes.js";
 import eventTypeRoutes from "./routes/eventTypeRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js"; // Importer les routes de paiement
+import adminRoutes from "./routes/adminRoutes.js"; // Importer les routes d'administration
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use("/events", eventRoutes);
 app.use("/event-types", eventTypeRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/payments", paymentRoutes); // Ajouter les routes de paiement
+app.use("/admin", adminRoutes); // Ajouter les routes d'administration
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
