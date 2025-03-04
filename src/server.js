@@ -8,6 +8,7 @@ import eventTypeRoutes from "./routes/eventTypeRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js"; // Importer les routes de paiement
 import adminRoutes from "./routes/adminRoutes.js"; // Importer les routes d'administration
+import setupSwagger from "./config/swagger.js"; // Importer Swagger
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ app.use("/event-types", eventTypeRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/payments", paymentRoutes); // Ajouter les routes de paiement
 app.use("/admin", adminRoutes); // Ajouter les routes d'administration
+
+setupSwagger(app); // Activer Swagger
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>

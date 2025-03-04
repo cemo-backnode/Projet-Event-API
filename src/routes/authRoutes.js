@@ -8,7 +8,33 @@ const prisma = new PrismaClient();
 const router = express.Router();
 const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";
 
-// Inscription
+/**
+ * @swagger
+ * /auth/signup:
+ *   post:
+ *     summary: Créer un compte utilisateur
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nom:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               motDePasse:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Utilisateur créé avec succès
+ *       400:
+ *         description: Email déjà utilisé
+ */
 router.post("/signup", async (req, res) => {
   const { nom, email, motDePasse, role } = req.body;
   try {
@@ -22,7 +48,29 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Connexion
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Connexion utilisateur
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               motDePasse:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Connexion réussie
+ *       401:
+ *         description: Identifiants incorrects
+ */
 router.post("/login", async (req, res) => {
   const { email, motDePasse } = req.body;
   try {
@@ -39,7 +87,18 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Récupération du profil
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     summary: Récupérer le profil de l'utilisateur connecté
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Profil utilisateur récupéré avec succès
+ *       404:
+ *         description: Utilisateur non trouvé
+ */
 router.get("/me", authMiddleware, async (req, res) => {
   console.log("Utilisateur authentifié :", req.user);
   try {
@@ -56,7 +115,33 @@ router.get("/me", authMiddleware, async (req, res) => {
   }
 });
 
-// Mise à jour du profil
+/**
+ * @swagger
+ * /auth/me:
+ *   put:
+ *     summary: Mettre à jour le profil de l'utilisateur connecté
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nom:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               motDePasse:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Profil mis à jour avec succès
+ *       400:
+ *         description: Email déjà utilisé
+ *       500:
+ *         description: Erreur serveur
+ */
 router.put("/me", authMiddleware, async (req, res) => {
   const { nom, email, motDePasse } = req.body;
   try {
@@ -80,7 +165,29 @@ router.put("/me", authMiddleware, async (req, res) => {
   }
 });
 
-// Rafraîchissement du token
+/**
+ * @swagger
+ * /auth/refresh-token:
+ *   post:
+ *     summary: Rafraîchir le token d'authentification
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Token rafraîchi avec succès
+ *       401:
+ *         description: Token manquant
+ *       403:
+ *         description: Token invalide
+ */
 router.post("/refresh-token", async (req, res) => {
   const { token } = req.body;
   if (!token) {

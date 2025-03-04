@@ -5,7 +5,52 @@ import authMiddleware from "../middleware/authMiddleware.js";
 const prisma = new PrismaClient();
 const router = express.Router();
 
-// Créer un événement (Organisateur)
+/**
+ * @swagger
+ * /events:
+ *   post:
+ *     summary: Créer un événement (Organisateur)
+ *     tags: [Events]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               titre:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               date:
+ *                 type: string
+ *                 format: date
+ *               heureDebut:
+ *                 type: string
+ *                 format: date-time
+ *               heureFin:
+ *                 type: string
+ *                 format: date-time
+ *               lieu:
+ *                 type: string
+ *               prix:
+ *                 type: number
+ *               capaciteMax:
+ *                 type: number
+ *               payant:
+ *                 type: boolean
+ *               typeEvenementId:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: Événement créé avec succès
+ *       400:
+ *         description: Le type d'événement est requis ou invalide
+ *       403:
+ *         description: Seuls les organisateurs peuvent créer un événement
+ *       500:
+ *         description: Erreur lors de la création de l'événement
+ */
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const {
@@ -67,7 +112,47 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-// Récupérer tous les événements avec filtres & pagination
+/**
+ * @swagger
+ * /events:
+ *   get:
+ *     summary: Récupérer tous les événements avec filtres & pagination
+ *     tags: [Events]
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: integer
+ *         description: Filtrer par type d'événement
+ *       - in: query
+ *         name: date
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filtrer par date
+ *       - in: query
+ *         name: lieu
+ *         schema:
+ *           type: string
+ *         description: Filtrer par lieu
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numéro de la page pour la pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Nombre d'éléments par page pour la pagination
+ *     responses:
+ *       200:
+ *         description: Liste des événements récupérée avec succès
+ *       500:
+ *         description: Erreur lors de la récupération des événements
+ */
 router.get("/", async (req, res) => {
   try {
     const { type, date, lieu, page = 1, limit = 10 } = req.query;
@@ -96,7 +181,57 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Modifier un événement (Organisateur)
+/**
+ * @swagger
+ * /events/{id}:
+ *   put:
+ *     summary: Modifier un événement (Organisateur)
+ *     tags: [Events]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de l'événement à modifier
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               titre:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               date:
+ *                 type: string
+ *                 format: date
+ *               heureDebut:
+ *                 type: string
+ *                 format: date-time
+ *               heureFin:
+ *                 type: string
+ *                 format: date-time
+ *               lieu:
+ *                 type: string
+ *               prix:
+ *                 type: number
+ *               capaciteMax:
+ *                 type: number
+ *               payant:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Événement modifié avec succès
+ *       403:
+ *         description: Vous n'êtes pas autorisé à modifier cet événement
+ *       404:
+ *         description: Événement non trouvé
+ *       500:
+ *         description: Erreur lors de la modification de l'événement
+ */
 router.put("/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
@@ -147,7 +282,29 @@ router.put("/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// Supprimer un événement (Organisateur)
+/**
+ * @swagger
+ * /events/{id}:
+ *   delete:
+ *     summary: Supprimer un événement (Organisateur)
+ *     tags: [Events]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de l'événement à supprimer
+ *     responses:
+ *       200:
+ *         description: Événement supprimé avec succès
+ *       403:
+ *         description: Vous n'êtes pas autorisé à supprimer cet événement
+ *       404:
+ *         description: Événement non trouvé
+ *       500:
+ *         description: Erreur lors de la suppression de l'événement
+ */
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
