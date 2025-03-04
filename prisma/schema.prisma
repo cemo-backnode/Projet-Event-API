@@ -46,15 +46,13 @@ model EventType {
 }
 
 model Booking {
-  id           Int     @id @default(autoincrement())
-  participantId Int
-  eventId      Int
-  dateReservation DateTime @default(now())
-  statut       BookingStatus
-
-  participant  User   @relation(fields: [participantId], references: [id])
-  evenement    Event  @relation(fields: [eventId], references: [id])
-  paiement     Payment?
+  id             Int      @id @default(autoincrement())
+  eventId        Int
+  participantId  Int
+  statut         BookingStatus @default(en_attente)
+  event          Event    @relation(fields: [eventId], references: [id])
+  participant    User     @relation(fields: [participantId], references: [id])
+  payment        Payment?
 }
 
 model Payment {
@@ -75,9 +73,9 @@ enum Role {
 }
 
 enum BookingStatus {
-  confirme
-  annule
   en_attente
+  confirmee
+  annulee
 }
 
 enum PaymentStatus {
