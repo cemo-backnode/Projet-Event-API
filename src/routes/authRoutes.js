@@ -56,6 +56,30 @@ router.get("/me", authMiddleware, async (req, res) => {
   }
 });
 
+// Mise à jour du profil
+router.put("/me", authMiddleware, async (req, res) => {
+  const { nom, email, motDePasse } = req.body;
+  try {
+    const data = {};
+    if (nom) data.nom = nom;
+    if (email) data.email = email;
+    if (motDePasse) data.motDePasse = await bcrypt.hash(motDePasse, 10);
+
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      data,
+    });
+
+    res.json(user);
+  } catch (error) {
+    if (error.code === "P2002") {
+      res.status(400).json({ error: "Email déjà utilisé !" });
+    } else {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  }
+});
+
 // Rafraîchissement du token
 router.post("/refresh-token", async (req, res) => {
   const { token } = req.body;

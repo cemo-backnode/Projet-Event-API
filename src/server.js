@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import eventTypeRoutes from "./routes/eventTypeRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js"; // Importer les routes de paiement
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use("/auth", authRoutes);
 app.use("/events", eventRoutes);
 app.use("/event-types", eventTypeRoutes);
 app.use("/bookings", bookingRoutes);
+app.use("/payments", paymentRoutes); // Ajouter les routes de paiement
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
